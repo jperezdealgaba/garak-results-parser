@@ -42,7 +42,7 @@ with open(args.file, 'r') as jsonl_file:
 
 with open(parsed_path, 'x', newline='') as file:
     writer = csv.writer(file)
-    field = ["Goal", "Prompt", "Output"]
+    field = ["Goal", "Prompt", "Output", "Trigger", "Detector"]
     writer.writerow(field)
     for json_str in json_list:
         json_line = json.loads(json_str)
@@ -58,6 +58,16 @@ with open(parsed_path, 'x', newline='') as file:
                 if json_line["prompt"]:
                     prompt = json_line["prompt"].rstrip().replace("\n", "")
                 output = parsed_output["response"].rstrip().replace("\n", "")
-                parsed_line = [goal, prompt, output]
+                if json_line["trigger"]:
+                    trigger = json_line["trigger"].rstrip().replace("\n", "")
+                else:
+                    trigger = ""
+                if json_line["trigger"]:
+                    detector = json_line["detector"].rstrip().replace("\n", "")
+                    detector = "https://reference.garak.ai/en/stable/garak.detectors." + detector.split('.')[0] + \
+                               ".html" + "#garak.detectors." + detector
+                else:
+                    detector = ""
+                parsed_line = [goal, prompt, output, trigger, detector]
 
         writer.writerow(parsed_line)
